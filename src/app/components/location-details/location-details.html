@@ -1,0 +1,34 @@
+<article>
+  <img
+    class="listing-photo"
+    [src]="location?.photo"
+    alt="Exterior photo of {{ location?.name }}"
+    crossorigin
+  />
+  <section class="listing-description">
+    <h2 class="listing-heading">{{ location?.name }}</h2>
+    <p class="listing-location">{{ location?.city }}, {{ location?.state }}</p>
+  </section>
+  <section class="listing-features">
+    <h2 class="section-heading">About this housing location</h2>
+    <ul>
+      <li>Units available: {{ location?.availableUnits }}</li>
+      <li>Does this location have wifi: {{ location?.wifi }}</li>
+      <li>Does this location have laundry: {{ location?.laundry }}</li>
+    </ul>
+  </section>
+  <span>
+    <!-- <button (click)="router.navigate(['/'])">Home</button> -->
+    <!-- PREV -->
+    <button class="button" (click)="goBack()" [disabled]="currentIndex === 0">Prev</button>
+
+    <!-- NEXT -->
+    <button
+      class="button"
+      (click)="goForward()"
+      [disabled]="currentIndex === housingLocationList.length - 1"
+    >
+      Next
+    </button>
+  </span>
+</article>
