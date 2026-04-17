@@ -118,11 +118,42 @@ export class LocationService {
       laundry: true,
     },
   ];
+  // private currentList: HousingLocationInfo[] = [...this.housingLocationList];
+  // restoreLocations() {
+  //   this.currentList = [...this.housingLocationList];
+  // }
+  // getAllHousingLocations() {
+  //   return this.housingLocationList;
+  // }
+
+  // // getLocationById(id: number): HousingLocationInfo | undefined {
+  // //   return this.housingLocationList.find((location) => location.id === id);
+  // // }
+
+  // deleteLocations(ids: number[]) {
+  //   const filtered = this.housingLocationList.filter((location) => !ids.includes(location.id));
+  //   this.housingLocationList.length = 0;
+  //   this.housingLocationList.push(...filtered);
+  // }
+  // hasChanges() {
+  //   return this.currentList.length !== this.housingLocationList.length;
+  // }
+  //
+  private deletedIds = new Set<number>();
+
   getAllHousingLocations() {
-    return this.housingLocationList;
+    return this.housingLocationList.filter((location) => !this.deletedIds.has(location.id));
   }
 
-  getLocationById(id: number): HousingLocationInfo | undefined {
-    return this.housingLocationList.find((location) => location.id === id);
+  deleteLocations(ids: number[]) {
+    ids.forEach((id) => this.deletedIds.add(id));
+  }
+
+  restoreLocations() {
+    this.deletedIds.clear();
+  }
+
+  hasChanges() {
+    return this.deletedIds.size > 0;
   }
 }

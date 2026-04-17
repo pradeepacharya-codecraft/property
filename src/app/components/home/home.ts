@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { HousingLocation } from '../housing-location/housing-location';
 import { HousingLocationInfo } from '../../models/housing-location-info';
 import { inject } from '@angular/core';
@@ -13,25 +13,58 @@ import { Router } from '@angular/router';
   styleUrls: ['./home.css'],
 })
 export class Home {
+  selectedItems = new Set<number>();
   locationService = inject(LocationService);
   mode = signal<'normal' | 'edit'>('normal');
-  housingLocationList: HousingLocationInfo[] = [];
+  housingLocationList: HousingLocationInfo[] = this.locationService.getAllHousingLocations();
   router = inject(Router);
-
-  ngOnInit() {
-    this.housingLocationList = this.locationService.getAllHousingLocations();
-  }
+  modeString = computed(
+    () => ` ${this.mode() === 'normal' ? ' ' : 'you can select the housing location to DELETE '} `,
+  );
 
   onSelect(selected: HousingLocationInfo) {
     console.log('housing location is clicked', selected.name);
-    this.router.navigate(['details', selected.id]);
-    this.housingLocationList = [
-      selected,
-      ...this.housingLocationList.filter((item) => item.id !== selected.id),
-    ];
+    if (this.mode() === 'normal') {
+      this.router.navigate(['details', selected.id]);
+    } else {
+      if (this.selectedItems.has(selected.id)) {
+        this.selectedItems.delete(selected.id);
+      } else {
+        this.selectedItems.add(selected.id);
+      }
+    }
   }
   handleCheckbox(event: Event) {
-    console.log('check box is clicked', (event.target as HTMLInputElement).checked);
-    this.mode.update((prev) => (prev === 'normal' ? 'edit' : 'normal'));
+    const isChecked = (event.target as HTMLInputElement).checked;
+
+    this.mode.set(isChecked ? 'edit' : 'normal');
+
+    if (!isChecked) {
+      this.selectedItems.clear();
+    }
+  }
+  deleteSelected() {
+    if (this.mode() !== 'edit') {
+      return;
+    }
+    if (this.selectedItems.size === 0) {
+      return;
+    }
+    const confirmDelete = confirm('Are you sure you want to delete selected items?');
+    if (!confirmDelete) {
+      return;
+    }
+    const idsToDelete = Array.from(this.selectedItems);
+    this.locationService.deleteLocations(idsToDelete);
+    this.housingLocationList = this.locationService.getAllHousingLocations();
+    this.selectedItems.clear();
+    this.mode.set('normal');
+  }
+  restoreAll() {
+    this.locationService.restoreLocations();
+    this.housingLocationList = this.locationService.getAllHousingLocations();
+
+    this.selectedItems.clear();
+    this.mode.set('normal');
   }
 }
