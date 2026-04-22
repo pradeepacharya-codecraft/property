@@ -1,6 +1,6 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, linkedSignal, signal } from '@angular/core';
 import { HousingLocation } from '../housing-location/housing-location';
-import { HousingLocationInfo } from '../../models/housing-location-info';
+import { HousingLocationInfo, HousingLOcationView } from '../../models/housing-location-info';
 import { inject } from '@angular/core';
 import { LocationService } from '../../services/location-service';
 import { Router } from '@angular/router';
@@ -21,7 +21,7 @@ export class Home {
   modeString = computed(
     () => ` ${this.mode() === 'normal' ? ' ' : 'you can select the housing location to DELETE '} `,
   );
-
+  // ocationDisplay = linkedSignal<HousingLOcationView[]>(()=>{})
   onSelect(selected: HousingLocationInfo) {
     console.log('housing location is clicked', selected.name);
     if (this.mode() === 'normal') {

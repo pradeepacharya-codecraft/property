@@ -4,6 +4,10 @@
     <input type="text" placeholder="Filter by city" />
     <button class="primary" type="button">Search</button>
   </form>
+  <!-- <form class="search-bar" (submit)="$event.preventDefault()">
+    <input type="text" placeholder="Filter by city" (input)="onSearch($event)" />
+    <button class="primary" type="button">Search</button>
+  </form> -->
 
   <section class="controls">
     <label class="edit-toggle">
@@ -29,13 +33,11 @@
 
   <section class="results">
     @for (housingLocation of housingLocationList; track housingLocation.id) {
-      <div
-        class="card-wrapper"
-        [class.selected]="selectedItems.has(housingLocation.id)"
-        (click)="onSelect(housingLocation)"
-      >
-        <app-housing-location [housingLocation]="housingLocation"> </app-housing-location>
-      </div>
+      <app-housing-location
+        [housingLocation]="housingLocation"
+        [selected]="selectedItems.has(housingLocation.id)"
+        (select)="onSelect($event)"
+      ></app-housing-location>
     } @empty {
       <p class="empty-state">No housing locations found.</p>
     }

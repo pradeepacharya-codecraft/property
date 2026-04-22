@@ -7,17 +7,17 @@ import { BASE_URL } from '../../services/location-service';
   imports: [],
   templateUrl: './housing-location.html',
   styleUrl: './housing-location.css',
+
   // providers: [{ provide: LocationService, useClass: LocationService }],
 })
 export class HousingLocation {
-  
   housingLocation = input.required<HousingLocationInfo>();
+  selected = input<boolean>();
   locationService = inject(LocationService);
   baseUrl = inject(BASE_URL);
   select = output<HousingLocationInfo>();
 
   handleClick() {
-
     this.select.emit(this.housingLocation());
     console.log('baseUrl in HousingLocation component:', this.baseUrl);
   }

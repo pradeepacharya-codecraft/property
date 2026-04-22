@@ -1,4 +1,4 @@
-<button class="container" (click)="handleClick()">
+<button class="card-container" [class.selected]="selected()" (click)="handleClick()">
   <section class="listing">
     @if (housingLocation().wifi) {
       <img class="wifi-photo" src="../../../../public/wifi_image.jpg" alt="wifi" />

@@ -116,29 +116,11 @@ export class LocationService {
       availableUnits: 6,
       wifi: true,
       laundry: true,
+      
     },
   ];
-  // private currentList: HousingLocationInfo[] = [...this.housingLocationList];
-  // restoreLocations() {
-  //   this.currentList = [...this.housingLocationList];
-  // }
-  // getAllHousingLocations() {
-  //   return this.housingLocationList;
-  // }
+  
 
-  // // getLocationById(id: number): HousingLocationInfo | undefined {
-  // //   return this.housingLocationList.find((location) => location.id === id);
-  // // }
-
-  // deleteLocations(ids: number[]) {
-  //   const filtered = this.housingLocationList.filter((location) => !ids.includes(location.id));
-  //   this.housingLocationList.length = 0;
-  //   this.housingLocationList.push(...filtered);
-  // }
-  // hasChanges() {
-  //   return this.currentList.length !== this.housingLocationList.length;
-  // }
-  //
   private deletedIds = new Set<number>();
 
   getAllHousingLocations() {
