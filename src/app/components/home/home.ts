@@ -1,70 +1,133 @@
-import { Component, computed, linkedSignal, signal } from '@angular/core';
+import { Component, computed, inject, linkedSignal, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { HousingLocation } from '../housing-location/housing-location';
 import { HousingLocationInfo, HousingLOcationView } from '../../models/housing-location-info';
-import { inject } from '@angular/core';
-import { LocationService } from '../../services/location-service';
-import { Router } from '@angular/router';
-
+import { LocationService, BASE_URL } from '../../services/location-service';
 @Component({
   selector: 'app-home',
-
   imports: [HousingLocation],
   templateUrl: './home.html',
   styleUrls: ['./home.css'],
 })
 export class Home {
-  selectedItems = new Set<number>();
   locationService = inject(LocationService);
-  mode = signal<'normal' | 'edit'>('normal');
-  housingLocationList: HousingLocationInfo[] = this.locationService.getAllHousingLocations();
   router = inject(Router);
-  modeString = computed(
-    () => ` ${this.mode() === 'normal' ? ' ' : 'you can select the housing location to DELETE '} `,
+  baseUrl = inject(BASE_URL);
+  mode = signal<'normal' | 'edit'>('normal');
+
+  // signal from service
+  housingLocationList = this.locationService.getAllLocations();
+
+  modeString = computed(() =>
+    this.mode() === 'normal' ? '' : 'you can select the housing location to DELETE',
   );
-  // ocationDisplay = linkedSignal<HousingLOcationView[]>(()=>{})
+
+  locationToDisplay = linkedSignal<HousingLocationInfo[], HousingLOcationView[]>({
+    source: this.housingLocationList,
+
+    computation: (nextLocations, previous) => {
+      const previousSelectionMap = new Map(
+        (previous?.value ?? []).map((item) => [item.id, item.selected]),
+      );
+     
+      return nextLocations
+        .filter((location) => !location.deleted)
+        .map((location) => ({
+          ...location,
+          selected: previousSelectionMap.get(location.id) ?? false,
+        }));
+    },
+  });
+
   onSelect(selected: HousingLocationInfo) {
-    console.log('housing location is clicked', selected.name);
     if (this.mode() === 'normal') {
       this.router.navigate(['details', selected.id]);
-    } else {
-      if (this.selectedItems.has(selected.id)) {
-        this.selectedItems.delete(selected.id);
-      } else {
-        this.selectedItems.add(selected.id);
-      }
+
+      // clear selections when navigating
+      this.locationToDisplay.set(
+        this.locationToDisplay().map((vm) => ({
+          ...vm,
+          selected: false,
+        })),
+      );
+
+      return;
     }
+
+    // edit mode toggle selection
+    this.locationToDisplay.set(
+      this.locationToDisplay().map((vm) =>
+        vm.id === selected.id
+          ? {
+              ...vm,
+              selected: !vm.selected,
+            }
+          : vm,
+      ),
+    );
   }
+
   handleCheckbox(event: Event) {
     const isChecked = (event.target as HTMLInputElement).checked;
 
     this.mode.set(isChecked ? 'edit' : 'normal');
 
     if (!isChecked) {
-      this.selectedItems.clear();
+      this.clearSelections();
     }
   }
-  deleteSelected() {
-    if (this.mode() !== 'edit') {
-      return;
-    }
-    if (this.selectedItems.size === 0) {
-      return;
-    }
-    const confirmDelete = confirm('Are you sure you want to delete selected items?');
-    if (!confirmDelete) {
-      return;
-    }
-    const idsToDelete = Array.from(this.selectedItems);
-    this.locationService.deleteLocations(idsToDelete);
-    this.housingLocationList = this.locationService.getAllHousingLocations();
-    this.selectedItems.clear();
-    this.mode.set('normal');
-  }
-  restoreAll() {
-    this.locationService.restoreLocations();
-    this.housingLocationList = this.locationService.getAllHousingLocations();
 
-    this.selectedItems.clear();
+  clearSelections() {
+    this.locationToDisplay.set(
+      this.locationToDisplay().map((vm) => ({
+        ...vm,
+        selected: false,
+      })),
+    );
+  }
+
+  deleteSelected() {
+    if (this.mode() !== 'edit') return;
+
+    const idsToDelete = this.locationToDisplay()
+      .filter((item) => item.selected)
+      .map((item) => item.id);
+
+    if (!idsToDelete.length) return;
+
+    if (!confirm('Are you sure you want to delete selected items?')) {
+      return;
+    }
+
+    this.locationService.deleteLocationsByIds(idsToDelete);
+
+    // no manual refresh needed
     this.mode.set('normal');
   }
+
+  restoreAll() {
+    this.locationService.restoreAllDeletedLocation();
+
+    this.clearSelections();
+
+    this.mode.set('normal');
+  }
+
+  addLocation() {
+    const newLocation: HousingLocationInfo = {
+      id: 0,
+      name: 'Acme Fresh Start Housing',
+      city: 'Chicago',
+      state: 'IL',
+      photo: `${this.baseUrl}/bernard-hermant-CLKGGwIBTaY-unsplash.jpg`,
+      availableUnits: 4,
+      wifi: true,
+      laundry: true,
+      deleted: false,
+    };
+
+    this.locationService.addLocation(newLocation);
+  }
+
+  selectedCount = computed(() => this.locationToDisplay().filter((x) => x.selected).length);
 }

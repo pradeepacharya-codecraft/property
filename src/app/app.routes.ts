@@ -15,7 +15,7 @@ export const routes: Routes = [
     title: 'location Details Page    ',
   },
   {
-    path: 'linkedsignals demo',
+    path: 'linkedSignals',
     component: LinkedSignalDemo,
     title: 'linked signal page',
   },

@@ -1,6 +1,7 @@
-import { Injectable, InjectionToken } from '@angular/core';
+import { inject, Injectable, InjectionToken, Signal, signal } from '@angular/core';
 import { HousingLocationInfo } from '../models/housing-location-info';
-export const BASE_URL = new InjectionToken<string>('baseUrl', {
+
+export const BASE_URL = new InjectionToken<string>('base-url', {
   providedIn: 'root',
   factory: () => 'https://angular.dev/assets/images/tutorials/common',
 });
@@ -9,14 +10,12 @@ export const BASE_URL = new InjectionToken<string>('baseUrl', {
 })
 export class LocationService {
   static numberOfInstances = 0;
-
   constructor() {
     LocationService.numberOfInstances += 1;
-    console.log(`LocationService instance count: ${LocationService.numberOfInstances}`);
+    console.log('Number of instances of Location Service', LocationService.numberOfInstances);
   }
-  readonly baseUrl = 'https://angular.dev/assets/images/tutorials/common';
-
-  private readonly housingLocationList: HousingLocationInfo[] = [
+  private readonly baseUrl = inject(BASE_URL);
+  private housingLocations: HousingLocationInfo[] = [
     {
       id: 0,
       name: 'Acme Fresh Start Housing',
@@ -26,6 +25,7 @@ export class LocationService {
       availableUnits: 4,
       wifi: true,
       laundry: true,
+      deleted: false,
     },
     {
       id: 1,
@@ -36,6 +36,7 @@ export class LocationService {
       availableUnits: 0,
       wifi: false,
       laundry: true,
+      deleted: false,
     },
     {
       id: 2,
@@ -46,6 +47,7 @@ export class LocationService {
       availableUnits: 1,
       wifi: false,
       laundry: false,
+      deleted: false,
     },
     {
       id: 3,
@@ -56,6 +58,7 @@ export class LocationService {
       availableUnits: 1,
       wifi: true,
       laundry: false,
+      deleted: false,
     },
     {
       id: 4,
@@ -66,6 +69,7 @@ export class LocationService {
       availableUnits: 1,
       wifi: true,
       laundry: false,
+      deleted: false,
     },
     {
       id: 5,
@@ -76,6 +80,7 @@ export class LocationService {
       availableUnits: 2,
       wifi: true,
       laundry: true,
+      deleted: false,
     },
     {
       id: 6,
@@ -86,6 +91,7 @@ export class LocationService {
       availableUnits: 5,
       wifi: true,
       laundry: true,
+      deleted: false,
     },
     {
       id: 7,
@@ -96,6 +102,7 @@ export class LocationService {
       availableUnits: 2,
       wifi: true,
       laundry: true,
+      deleted: false,
     },
     {
       id: 8,
@@ -106,6 +113,7 @@ export class LocationService {
       availableUnits: 10,
       wifi: false,
       laundry: false,
+      deleted: false,
     },
     {
       id: 9,
@@ -116,26 +124,51 @@ export class LocationService {
       availableUnits: 6,
       wifi: true,
       laundry: true,
-      
+      deleted: false,
     },
   ];
-  
 
-  private deletedIds = new Set<number>();
+  private locations = signal<HousingLocationInfo[]>(this.housingLocations);
 
-  getAllHousingLocations() {
-    return this.housingLocationList.filter((location) => !this.deletedIds.has(location.id));
+  getAllLocations() {
+    return this.locations.asReadonly();
   }
 
-  deleteLocations(ids: number[]) {
-    ids.forEach((id) => this.deletedIds.add(id));
+  getLocationForId(id: number): HousingLocationInfo | undefined {
+    return this.locations().find((location) => location.id === id && location.deleted === false);
   }
 
-  restoreLocations() {
-    this.deletedIds.clear();
+  deleteLocationsByIds(ids: number[]) {
+    this.locations.update((prev) =>
+      prev.map((item) => {
+        if (ids.includes(item.id)) {
+          return { ...item, deleted: true };
+        }
+        return item;
+      }),
+    );
   }
 
-  hasChanges() {
-    return this.deletedIds.size > 0;
+  restoreAllDeletedLocation() {
+    this.locations.update((prev) =>
+      prev.map((item) => {
+        return {
+          ...item,
+          deleted: false,
+        };
+      }),
+    );
+  }
+
+  getDeletedCount() {
+    return this.locations().filter((item) => item.deleted).length;
+  }
+
+  addLocation(location: HousingLocationInfo) {
+    const currentLocations = [...this.locations()];
+    location.id = currentLocations.length;
+    currentLocations.push(location);
+
+    this.locations.set(currentLocations);
   }
 }

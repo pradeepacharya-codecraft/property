@@ -1,4 +1,5 @@
 export interface HousingLocationInfo {
+  deleted: any;
   id: number;
   name: string;
   city: string;
@@ -9,6 +10,6 @@ export interface HousingLocationInfo {
   laundry: boolean;
 }
 
-export interface  HousingLOcationView extends HousingLocationInfo{
-  selected:boolean|undefined;
+export interface HousingLOcationView extends HousingLocationInfo {
+  selected: boolean;
 }

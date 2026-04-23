@@ -1,13 +1,9 @@
 <section class="container">
-  <!-- 🔍 Search -->
+  <!-- Search -->
   <form class="search-bar">
     <input type="text" placeholder="Filter by city" />
     <button class="primary" type="button">Search</button>
   </form>
-  <!-- <form class="search-bar" (submit)="$event.preventDefault()">
-    <input type="text" placeholder="Filter by city" (input)="onSearch($event)" />
-    <button class="primary" type="button">Search</button>
-  </form> -->
 
   <section class="controls">
     <label class="edit-toggle">
@@ -22,22 +18,30 @@
     <button
       class="delete-btn"
       (click)="deleteSelected()"
-      [disabled]="mode() !== 'edit' || selectedItems.size === 0"
+      [disabled]="mode() !== 'edit' || selectedCount() === 0"
     >
-      Delete Selected ({{ selectedItems.size }})
+      Delete Selected ({{ selectedCount() }})
     </button>
-    <button class="restore-btn" (click)="restoreAll()" [disabled]="!locationService.hasChanges()">
+
+    <button
+      class="restore-btn"
+      (click)="restoreAll()"
+      [disabled]="locationService.getDeletedCount() === 0"
+    >
       Restore All
     </button>
+
+    <button class="add-btn" (click)="addLocation()" type="button" title="Add Location">+</button>
   </section>
 
   <section class="results">
-    @for (housingLocation of housingLocationList; track housingLocation.id) {
+    @for (housingLocation of locationToDisplay(); track housingLocation.id) {
       <app-housing-location
         [housingLocation]="housingLocation"
-        [selected]="selectedItems.has(housingLocation.id)"
+        [selected]="housingLocation.selected"
         (select)="onSelect($event)"
-      ></app-housing-location>
+      >
+      </app-housing-location>
     } @empty {
       <p class="empty-state">No housing locations found.</p>
     }

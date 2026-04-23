@@ -8,7 +8,6 @@ import { HousingLocationInfo } from '../../models/housing-location-info';
   imports: [],
   templateUrl: './location-details.html',
   styleUrl: './location-details.css',
-  
 })
 export class LocationDetails {
   route = inject(ActivatedRoute);
@@ -27,7 +26,9 @@ export class LocationDetails {
   }
 
   ngOnInit() {
-    this.housingLocationList = this.locationService.getAllHousingLocations();
+    this.housingLocationList = this.locationService
+      .getAllLocations()()
+      .filter((item) => !item.deleted);
 
     this.route.paramMap.subscribe((params) => {
       const id = Number(params.get('id'));
@@ -43,7 +44,6 @@ export class LocationDetails {
     LocationDetails.count -= 1;
   }
 
- 
   goBack() {
     if (this.currentIndex > 0) {
       const prevItem = this.housingLocationList[this.currentIndex - 1];
@@ -53,7 +53,6 @@ export class LocationDetails {
     }
   }
 
- 
   goForward() {
     if (this.currentIndex < this.housingLocationList.length - 1) {
       const nextItem = this.housingLocationList[this.currentIndex + 1];
