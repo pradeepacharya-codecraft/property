@@ -1,12 +1,22 @@
 <main>
-  <a [routerLink]="['/']">
-    <header class="brand-name">
-      <img class="brand-logo" src="public/logo.svg" alt="logo" aria-hidden="true" />
-    </header>
-  </a>
-  <section class="content">
-    <router-outlet />
+  <nav>
+    <a [routerLink]="['/']">
+      <header class="brand-name">
+        <img class="brand-logo" src="public/logo.svg" alt="logo" />
+      </header>
+    </a>
 
-    <app-counter />
+    <a [routerLink]="['/linkedSignals']">
+      <span class="brand-name">Linked Signal</span>
+    </a>
+
+    <a [routerLink]="['/forms']">
+      <span class="brand-name">Forms</span>
+    </a>
+  </nav>
+
+  <section class="content">
+    <router-outlet></router-outlet>
+    <!-- <app-counter></app-counter> -->
   </section>
 </main>

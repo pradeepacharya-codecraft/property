@@ -1,0 +1,86 @@
+<div class="overlay" [class.active]="PanelSignal()">
+  <div class="panel" [class.active]="PanelSignal()">
+    <h2>Add Location</h2>
+
+    <form #itemForm="ngForm" (ngSubmit)="onSubmit(itemForm)">
+      <label>Name</label>
+      <input name="name" ngModel required />
+
+      <label>City</label>
+      <input name="city" ngModel required />
+
+      <label>State</label>
+      <input name="state" ngModel required />
+
+      <label>Photo URL</label>
+      <input name="photo" ngModel />
+
+      <label>Available Units</label>
+      <input name="availableUnits" type="number" ngModel required />
+
+      <label class="checkbox">
+        <input type="checkbox" name="wifi" ngModel />
+        WiFi
+      </label>
+
+      <label class="checkbox">
+        <input type="checkbox" name="laundry" ngModel />
+        Laundry
+      </label>
+
+      <div class="actions">
+        <button type="submit">Add</button>
+
+    
+        <button type="button" (click)="itemForm.reset()">Reset</button>
+
+        <button type="button" (click)="hidePanel()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- 
+<div class="overlay" [class.active]="PanelSignal()">
+  <div class="panel" [class.active]="PanelSignal()">
+    <h2>{{ isEditMode ? 'Edit Location' : 'Add Location' }}</h2>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <label>Name</label>
+      <input formControlName="name" />
+
+      <label>City</label>
+      <input formControlName="city" />
+
+      <label>State</label>
+      <input formControlName="state" />
+
+      <label>Photo URL</label>
+      <input formControlName="photo" />
+
+      <label>Available Units</label>
+      <input type="number" formControlName="availableUnits" />
+
+      <label class="checkbox">
+        <input type="checkbox" formControlName="wifi" />
+        WiFi
+      </label>
+
+      <label class="checkbox">
+        <input type="checkbox" formControlName="laundry" />
+        Laundry
+      </label>
+
+      <div class="actions">
+        <button type="submit">
+          {{ isEditMode ? 'Update' : 'Add' }}
+        </button>
+
+     
+        <button type="button" (click)="form.reset()">Reset</button>
+
+        <button type="button" (click)="hidePanel()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div> -->

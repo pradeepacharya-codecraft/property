@@ -1,0 +1,40 @@
+main {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Navigation container (top links) */
+main > a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Make all nav links appear in a row */
+main {
+  gap: 10px;
+}
+
+/* Wrap the top links in a row */
+main {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Create a row for navigation */
+main > a {
+  display: inline-block;
+  margin-right: 20px;
+}
+
+/* Better approach: group links */
+nav {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Optional styling */
+.brand-name {
+  font-weight: bold;
+  cursor: pointer;
+}

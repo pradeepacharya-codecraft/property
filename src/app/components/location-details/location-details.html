@@ -18,10 +18,8 @@
     </ul>
   </section>
   <span>
-    
     <button class="button" (click)="goBack()" [disabled]="currentIndex === 0">Prev</button>
 
-   
     <button
       class="button"
       (click)="goForward()"
@@ -29,5 +27,6 @@
     >
       Next
     </button>
+    <button class="add-btn" (click)="editLocation(location?.id)">Edit</button>
   </span>
 </article>

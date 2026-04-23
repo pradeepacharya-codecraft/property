@@ -1,11 +1,11 @@
 import { Component, computed, inject, linkedSignal, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { HousingLocation } from '../housing-location/housing-location';
 import { HousingLocationInfo, HousingLOcationView } from '../../models/housing-location-info';
 import { LocationService, BASE_URL } from '../../services/location-service';
 @Component({
   selector: 'app-home',
-  imports: [HousingLocation],
+  imports: [HousingLocation, RouterOutlet],
   templateUrl: './home.html',
   styleUrls: ['./home.css'],
 })
@@ -29,7 +29,7 @@ export class Home {
       const previousSelectionMap = new Map(
         (previous?.value ?? []).map((item) => [item.id, item.selected]),
       );
-     
+
       return nextLocations
         .filter((location) => !location.deleted)
         .map((location) => ({
@@ -114,19 +114,7 @@ export class Home {
   }
 
   addLocation() {
-    const newLocation: HousingLocationInfo = {
-      id: 0,
-      name: 'Acme Fresh Start Housing',
-      city: 'Chicago',
-      state: 'IL',
-      photo: `${this.baseUrl}/bernard-hermant-CLKGGwIBTaY-unsplash.jpg`,
-      availableUnits: 4,
-      wifi: true,
-      laundry: true,
-      deleted: false,
-    };
-
-    this.locationService.addLocation(newLocation);
+    this.router.navigate(['home/edit']);
   }
 
   selectedCount = computed(() => this.locationToDisplay().filter((x) => x.selected).length);

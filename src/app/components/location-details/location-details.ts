@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocationService } from '../../services/location-service';
 import { HousingLocationInfo } from '../../models/housing-location-info';
@@ -12,6 +12,8 @@ import { HousingLocationInfo } from '../../models/housing-location-info';
 export class LocationDetails {
   route = inject(ActivatedRoute);
   router = inject(Router);
+
+  //id = input.required<string>();
   locationService = inject(LocationService);
 
   housingLocationList: HousingLocationInfo[] = [];
@@ -58,5 +60,11 @@ export class LocationDetails {
       const nextItem = this.housingLocationList[this.currentIndex + 1];
       this.router.navigate(['/details', nextItem.id]);
     }
+  }
+
+  editLocation(id: number | string | undefined) {
+    if (id === undefined) return;
+
+    this.router.navigate(['/home/edit', id]);
   }
 }
