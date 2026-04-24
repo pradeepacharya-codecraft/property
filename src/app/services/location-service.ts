@@ -163,11 +163,11 @@ export class LocationService {
   getDeletedCount() {
     return this.locations().filter((item) => item.deleted).length;
   }
-  // updateLocation(updatedLocation: HousingLocationInfo) {
-  //   this.locations.update((prev) =>
-  //     prev.map((item) => (item.id === updatedLocation.id ? { ...item, ...updatedLocation } : item)),
-  //   );
-  // }
+  updateLocation(updatedLocation: HousingLocationInfo) {
+    this.locations.update((prev) =>
+      prev.map((item) => (item.id === updatedLocation.id ? { ...item, ...updatedLocation } : item)),
+    );
+  }
   // getById(id: string | number): HousingLocationInfo | undefined {
   //   return this.locations().find((location) => location.id === id && location.deleted === false);
   // }

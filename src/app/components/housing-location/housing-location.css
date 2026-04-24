@@ -66,3 +66,11 @@
 .listing-location {
   padding: 10px 20px 20px;
 }
+
+.edit-btn {
+  background-color: rgb(0, 217, 255);
+  border-radius: 25%;
+  padding: 10px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}

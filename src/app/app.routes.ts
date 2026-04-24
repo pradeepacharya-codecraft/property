@@ -37,6 +37,12 @@ export const routes: Routes = [
       import('./components/location-details/location-details').then((m) => m.LocationDetails),
     //component: LocationDetails,
     title: 'location Details Page    ',
+    children: [
+      {
+        path: 'edit',
+        component: LocationForm,
+      },
+    ],
   },
   {
     path: 'linkedSignals',

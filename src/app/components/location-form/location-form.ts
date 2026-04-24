@@ -1,23 +1,60 @@
 import { Component, inject, signal } from '@angular/core';
-import { FormsModule, NgForm } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { HousingLocationInfo } from '../../models/housing-location-info';
 import { LocationService } from '../../services/location-service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Location } from '@angular/common';
+import { A11yModule } from '@angular/cdk/a11y';
 @Component({
   selector: 'app-location-form',
   standalone: true,
-  imports: [FormsModule],
+  imports: [ReactiveFormsModule, A11yModule],
   templateUrl: './location-form.html',
   styleUrl: './location-form.css',
 })
 export class LocationForm {
   PanelSignal = signal<boolean>(false);
-  locationService = inject(LocationService);
-  route = inject(ActivatedRoute);
-  baseUrl = 'assets';
-  router = inject(Router);
+
+  private locationService = inject(LocationService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private fb = inject(FormBuilder);
+
+  form!: FormGroup;
+  locationRouter = inject(Location);
   isEditMode = false;
-  currentId: string | null = null;
+  currentId: number | null = null;
+
+  ngOnInit() {
+    // handle BOTH cases (details + home)
+    const idParam =
+      this.route.snapshot.paramMap.get('id') || this.route.parent?.snapshot.paramMap.get('id');
+
+    this.currentId = idParam ? Number(idParam) : null;
+    this.isEditMode = this.currentId !== null;
+
+    // form
+    this.form = this.fb.group({
+      name: [''],
+      city: [''],
+      state: [''],
+      photo: [''],
+      availableUnits: [0],
+      wifi: [false],
+      laundry: [false],
+    });
+
+    // patch
+    if (this.isEditMode && this.currentId !== null) {
+      const location = this.locationService.getLocationForId(this.currentId);
+
+      if (location) {
+        this.form.patchValue(location);
+      }
+    }
+
+    this.showPanel();
+  }
 
   showPanel() {
     this.PanelSignal.set(true);
@@ -25,125 +62,45 @@ export class LocationForm {
 
   hidePanel() {
     this.PanelSignal.set(false);
+
+    if (this.isEditMode && this.currentId !== null) {
+      // go back to /details/:id OR /home (handled by route structure)
+
+      this.locationRouter.back();
+    } else {
+      this.router.navigate(['/home']);
+    }
   }
+  onSubmit() {
+    if (this.form.invalid) return;
 
-  onSubmit(form: any) {
-    if (!form.valid) return;
+    const formValue = this.form.value;
 
-    const formValue = form.value;
+    let location: HousingLocationInfo;
 
-    const newLocation: HousingLocationInfo = {
-      id: 0, // internal
-      deleted: false, // internal
+    if (this.isEditMode && this.currentId !== null) {
+      // EDIT
+      location = {
+        id: this.currentId,
+        deleted: false,
+        ...formValue,
+      };
 
-      name: formValue.name,
-      city: formValue.city,
-      state: formValue.state,
-      photo: formValue.photo,
-      availableUnits: formValue.availableUnits,
+      this.locationService.updateLocation(location);
+    } else {
+      // ADD
+      const length = this.locationService.getAllLocations()().length;
 
-      wifi: formValue.wifi ?? false,
-      laundry: formValue.laundry ?? false,
-    };
+      location = {
+        id: length,
+        deleted: false,
+        ...formValue,
+      };
 
-    // call addLocation
-    this.addLocation(newLocation);
+      this.locationService.addLocation(location);
+    }
 
-    form.reset();
-    this.hidePanel();
-    this.router.navigate(['/home']);
-  }
-  addLocation(newLocation: HousingLocationInfo) {
-    this.locationService.addLocation(newLocation);
+    this.form.reset();
+    this.hidePanel(); // ✅ ONLY navigation here
   }
 }
-
-// import { Component, inject, signal } from '@angular/core';
-// import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
-// import { HousingLocationInfo } from '../../models/housing-location-info';
-// import { LocationService } from '../../services/location-service';
-// import { ActivatedRoute, Router } from '@angular/router';
-
-// @Component({
-//   selector: 'app-location-form',
-//   standalone: true,
-//   imports: [ReactiveFormsModule],
-//   templateUrl: './location-form.html',
-//   styleUrl: './location-form.css',
-// })
-// export class LocationForm {
-//   PanelSignal = signal<boolean>(false);
-
-//   locationService = inject(LocationService);
-//   route = inject(ActivatedRoute);
-//   router = inject(Router);
-//   fb = inject(FormBuilder);
-
-//   baseUrl = 'assets';
-
-//   form!: FormGroup;
-
-//   isEditMode = false;
-//   currentId: string | null = null;
-
-//   ngOnInit() {
-//     this.showPanel();
-
-//     // check route id
-//     this.currentId = this.route.snapshot.paramMap.get('id');
-//     this.isEditMode = !!this.currentId;
-
-//     // create form
-//     this.form = this.fb.group({
-//       name: [''],
-//       city: [''],
-//       state: [''],
-//       photo: [''],
-//       availableUnits: [0],
-//       wifi: [false],
-//       laundry: [false],
-//     });
-
-//     // EDIT MODE → patch values
-//     if (this.isEditMode && this.currentId) {
-//       const location = this.locationService.getById(this.currentId);
-
-//       if (location) {
-//         this.form.patchValue(location);
-//       }
-//     }
-//   }
-
-//   showPanel() {
-//     this.PanelSignal.set(true);
-//   }
-
-//   hidePanel() {
-//     this.PanelSignal.set(false);
-//   }
-
-//   onSubmit() {
-//     if (this.form.invalid) return;
-
-//     const formValue = this.form.value;
-
-//     const location: HousingLocationInfo = {
-//       id: this.isEditMode && this.currentId ? this.currentId : crypto.randomUUID(),
-
-//       deleted: false,
-
-//       ...formValue,
-//     };
-
-//     if (this.isEditMode) {
-//       this.locationService.updateLocation(location);
-//     } else {
-//       this.locationService.addLocation(location);
-//     }
-
-//     this.form.reset();
-//     this.hidePanel();
-
-//     this.router.navigate(['/home']);
-//   }
-// }

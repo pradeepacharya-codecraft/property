@@ -1,70 +1,74 @@
-import { Component, inject, input } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+
+import { Component, inject, signal, effect } from '@angular/core';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { LocationService } from '../../services/location-service';
 import { HousingLocationInfo } from '../../models/housing-location-info';
 
 @Component({
   selector: 'app-location-details',
-  imports: [],
+  imports: [RouterOutlet],
   templateUrl: './location-details.html',
   styleUrl: './location-details.css',
 })
 export class LocationDetails {
   route = inject(ActivatedRoute);
   router = inject(Router);
-
-  //id = input.required<string>();
   locationService = inject(LocationService);
 
-  housingLocationList: HousingLocationInfo[] = [];
+  
+  currentId = signal<number>(0);
+
   currentIndex = 0;
   location: HousingLocationInfo | undefined;
 
-  static count = 0;
-
   constructor() {
-    LocationDetails.count += 1;
-    console.log(`There are ${LocationDetails.count} instances of Details`);
-  }
+    // ✅ single source of truth
+    effect(() => {
+      const id = this.currentId();
 
-  ngOnInit() {
-    this.housingLocationList = this.locationService
-      .getAllLocations()()
-      .filter((item) => !item.deleted);
+      const list = this.getActiveList();
 
-    this.route.paramMap.subscribe((params) => {
-      const id = Number(params.get('id'));
-
-      this.currentIndex = this.housingLocationList.findIndex((item) => item.id === id);
-
-      this.location = this.housingLocationList[this.currentIndex];
+      this.currentIndex = list.findIndex((item) => item.id === id);
+      this.location = list[this.currentIndex];
     });
   }
 
-  ngOnDestroy() {
-    console.log('LocationDetails is destroyed');
-    LocationDetails.count -= 1;
+  ngOnInit() {
+    this.route.paramMap.subscribe((params) => {
+      this.currentId.set(Number(params.get('id')));
+    });
+  }
+
+  
+  getActiveList() {
+    return this.locationService
+      .getAllLocations()()
+      .filter((item) => !item.deleted);
   }
 
   goBack() {
+    const list = this.getActiveList();
+
     if (this.currentIndex > 0) {
-      const prevItem = this.housingLocationList[this.currentIndex - 1];
-      this.router.navigate(['/details', prevItem.id]);
+      this.router.navigate(['/details', list[this.currentIndex - 1].id]);
     } else {
-      this.router.navigate(['/']);
+      this.router.navigate(['/home']);
     }
   }
 
   goForward() {
-    if (this.currentIndex < this.housingLocationList.length - 1) {
-      const nextItem = this.housingLocationList[this.currentIndex + 1];
-      this.router.navigate(['/details', nextItem.id]);
+    const list = this.getActiveList();
+
+    if (this.currentIndex < list.length - 1) {
+      this.router.navigate(['/details', list[this.currentIndex + 1].id]);
     }
   }
 
-  editLocation(id: number | string | undefined) {
+  editLocation(id: number | undefined) {
     if (id === undefined) return;
 
-    this.router.navigate(['/home/edit', id]);
+    this.router.navigate(['edit'], {
+      relativeTo: this.route,
+    });
   }
 }

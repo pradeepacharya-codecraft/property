@@ -40,6 +40,7 @@
         [housingLocation]="housingLocation"
         [selected]="housingLocation.selected"
         (select)="onSelect($event)"
+        [isEditMode]="mode() === 'edit'"
       >
       </app-housing-location>
     } @empty {

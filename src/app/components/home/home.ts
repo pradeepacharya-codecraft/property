@@ -101,7 +101,7 @@ export class Home {
 
     this.locationService.deleteLocationsByIds(idsToDelete);
 
-    // no manual refresh needed
+    
     this.mode.set('normal');
   }
 
