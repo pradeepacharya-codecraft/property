@@ -3,9 +3,10 @@ import { Router, RouterOutlet } from '@angular/router';
 import { HousingLocation } from '../housing-location/housing-location';
 import { HousingLocationInfo, HousingLOcationView } from '../../models/housing-location-info';
 import { LocationService, BASE_URL } from '../../services/location-service';
+import { SearchBar } from '@components/search-bar/search-bar';
 @Component({
   selector: 'app-home',
-  imports: [HousingLocation, RouterOutlet],
+  imports: [HousingLocation, RouterOutlet, SearchBar],
   templateUrl: './home.html',
   styleUrls: ['./home.css'],
 })
@@ -101,7 +102,6 @@ export class Home {
 
     this.locationService.deleteLocationsByIds(idsToDelete);
 
-    
     this.mode.set('normal');
   }
 

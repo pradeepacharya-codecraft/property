@@ -1,4 +1,3 @@
-
 import { Component, inject, signal, effect } from '@angular/core';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { LocationService } from '../../services/location-service';
@@ -15,14 +14,12 @@ export class LocationDetails {
   router = inject(Router);
   locationService = inject(LocationService);
 
-  
   currentId = signal<number>(0);
 
   currentIndex = 0;
   location: HousingLocationInfo | undefined;
 
   constructor() {
-    // ✅ single source of truth
     effect(() => {
       const id = this.currentId();
 
@@ -39,7 +36,6 @@ export class LocationDetails {
     });
   }
 
-  
   getActiveList() {
     return this.locationService
       .getAllLocations()()

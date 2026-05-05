@@ -1,7 +1,7 @@
-<div class="overlay" [class.active]="PanelSignal()" (click)="!isEditMode && hidePanel()">
+<!-- <div class="overlay" [class.active]="panelVisible()" (click)="!isEditMode && hidePanel()">
   <div
     class="panel"
-    [class.active]="PanelSignal()"
+    [class.active]="panelVisible()"
     (click)="$event.stopPropagation()"
     cdkTrapFocus
     cdkTrapFocusAutoCapture
@@ -36,6 +36,104 @@
 
       <div class="actions">
         <button type="submit" [disabled]="form.invalid">
+          {{ isEditMode ? 'Update' : 'Add' }}
+        </button>
+
+        <button type="button" (click)="form.reset()">Reset</button>
+
+        <button type="button" (click)="hidePanel()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div> -->
+<div class="overlay" [class.active]="panelVisible()" (click)="hidePanel()">
+  <div
+    class="panel"
+    [class.active]="panelVisible()"
+    (click)="$event.stopPropagation()"
+    cdkTrapFocus
+    cdkTrapFocusAutoCapture
+  >
+    <h2>{{ isEditMode ? 'Edit Location' : 'Add Location' }}</h2>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <!-- NAME -->
+      <label>Name</label>
+      <input formControlName="name" />
+
+      @if ((form.get('name')?.touched || submitted) && form.get('name')?.invalid) {
+        <div class="error">
+          @if (form.get('name')?.errors?.['required']) {
+            <small>Name is required</small>
+          }
+          @if (form.get('name')?.errors?.['minlength']) {
+            <small>Name must be at least 3 characters</small>
+          }
+        </div>
+      }
+
+      <!-- CITY -->
+      <label>City</label>
+      <input formControlName="city" />
+
+      @if ((form.get('city')?.touched || submitted) && form.get('city')?.invalid) {
+        <div class="error">
+          <small>City is required</small>
+        </div>
+      }
+
+      <!-- STATE -->
+      <label>State</label>
+      <input formControlName="state" />
+
+      @if ((form.get('state')?.touched || submitted) && form.get('state')?.invalid) {
+        <div class="error">
+          <small>State is required</small>
+        </div>
+      }
+
+      <!-- PHOTO -->
+      <label>Photo URL</label>
+      <input formControlName="photo" />
+
+      @if ((form.get('photo')?.touched || submitted) && form.get('photo')?.invalid) {
+        <div class="error">
+          <small>Photo URL is required</small>
+        </div>
+      }
+
+      <!-- UNITS -->
+      <label>Available Units</label>
+      <input type="number" formControlName="availableUnits" />
+
+      @if (
+        (form.get('availableUnits')?.touched || submitted) && form.get('availableUnits')?.invalid
+      ) {
+        <div class="error">
+          @if (form.get('availableUnits')?.errors?.['required']) {
+            <small>Units are required</small>
+          }
+          @if (form.get('availableUnits')?.errors?.['min']) {
+            <small>Must be at least 1 unit</small>
+          }
+        </div>
+      }
+
+      <!-- WIFI -->
+      <label class="checkbox">
+        <input type="checkbox" formControlName="wifi" />
+        WiFi
+      </label>
+
+      <!-- LAUNDRY -->
+      <label class="checkbox">
+        <input type="checkbox" formControlName="laundry" />
+        Laundry
+      </label>
+
+      <!-- ACTIONS -->
+      <div class="actions">
+        <button type="submit" [disabled]="form.invalid || form.pristine">
           {{ isEditMode ? 'Update' : 'Add' }}
         </button>
 
