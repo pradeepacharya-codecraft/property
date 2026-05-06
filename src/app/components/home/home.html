@@ -1,8 +1,11 @@
 
   <section class="container">
     <!-- Search -->
-    <app-search-bar (search)="searchQuery.set($event)"></app-search-bar>
-
+    <!-- <app-search-bar (search)="searchQuery.set($event)"></app-search-bar> -->
+<app-search-bar 
+  [initialValue]="searchQuery()"
+  (search)="searchQuery.set($event)">
+</app-search-bar>
     <section class="controls">
       <label class="edit-toggle">
         <input type="checkbox" [checked]="mode() === 'edit'" (change)="handleCheckbox($event)" />
@@ -46,6 +49,9 @@
       }
     </section>
   </section>
+
+  
+
 
   <router-outlet></router-outlet>
 
