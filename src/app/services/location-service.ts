@@ -178,4 +178,17 @@ export class LocationService {
 
     this.locations.set(currentLocations);
   }
+  searchLocations(query: string): HousingLocationInfo[] {
+    const q = query.trim().toLowerCase();
+
+    if (!q) return this.locations().filter((l) => !l.deleted);
+
+    return this.locations().filter(
+      (location) =>
+        !location.deleted &&
+        (location.name.toLowerCase().includes(q) ||
+          location.city.toLowerCase().includes(q) ||
+          location.state.toLowerCase().includes(q)),
+    );
+  }
 }

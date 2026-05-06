@@ -51,19 +51,18 @@ import { Component, inject, input, output } from '@angular/core';
 import { Router } from '@angular/router';
 import { HousingLocationInfo } from '../../models/housing-location-info';
 import { LocationService, BASE_URL } from '../../services/location-service';
+import { CardLayout } from '@components/card-layout/card-layout';
 
 @Component({
   selector: 'app-housing-location',
-  imports: [],
+  imports: [CardLayout],
   templateUrl: './housing-location.html',
   styleUrl: './housing-location.css',
 })
 export class HousingLocation {
   housingLocation = input.required<HousingLocationInfo>();
 
-  
   selected = input.required<boolean>();
-
 
   isEditMode = input<boolean>(false);
 
@@ -71,15 +70,14 @@ export class HousingLocation {
 
   locationService = inject(LocationService);
   baseUrl = inject(BASE_URL);
-  router = inject(Router); // 
+  router = inject(Router); //
 
   handleClick() {
     this.select.emit(this.housingLocation());
   }
 
-  
   editLocation(event: Event) {
-    event.stopPropagation(); 
+    event.stopPropagation();
 
     const id = this.housingLocation().id;
 

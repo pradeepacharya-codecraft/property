@@ -1,0 +1,27 @@
+.search-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+
+  width: 900px;
+  height: 60px;
+  flex-shrink: 0;
+}
+
+.search-bar input {
+  flex: 1;
+  height: 100%;
+  padding: 0 12px;
+
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  transition: 0.2s;
+
+  box-sizing: border-box;
+}
+
+.search-bar input:focus {
+  outline: none;
+  border-color: #4caf50;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}

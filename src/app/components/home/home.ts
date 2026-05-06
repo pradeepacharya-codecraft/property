@@ -4,9 +4,10 @@ import { HousingLocation } from '../housing-location/housing-location';
 import { HousingLocationInfo, HousingLOcationView } from '../../models/housing-location-info';
 import { LocationService, BASE_URL } from '../../services/location-service';
 import { SearchBar } from '@components/search-bar/search-bar';
+import { CardLayout } from '@components/card-layout/card-layout';
 @Component({
   selector: 'app-home',
-  imports: [HousingLocation, RouterOutlet, SearchBar],
+  imports: [HousingLocation, RouterOutlet, SearchBar, CardLayout],
   templateUrl: './home.html',
   styleUrls: ['./home.css'],
 })
@@ -15,7 +16,7 @@ export class Home {
   router = inject(Router);
   baseUrl = inject(BASE_URL);
   mode = signal<'normal' | 'edit'>('normal');
-
+  searchQuery = signal('');
   // signal from service
   housingLocationList = this.locationService.getAllLocations();
 
@@ -27,16 +28,32 @@ export class Home {
     source: this.housingLocationList,
 
     computation: (nextLocations, previous) => {
+      const query = this.searchQuery().toLowerCase().trim();
+
       const previousSelectionMap = new Map(
         (previous?.value ?? []).map((item) => [item.id, item.selected]),
       );
 
-      return nextLocations
-        .filter((location) => !location.deleted)
-        .map((location) => ({
-          ...location,
-          selected: previousSelectionMap.get(location.id) ?? false,
-        }));
+      return (
+        nextLocations
+          // 1. remove deleted items
+          .filter((location) => !location.deleted)
+
+          // 2. search filter
+          .filter(
+            (location) =>
+              query === '' ||
+              location.name.toLowerCase().includes(query) ||
+              location.city.toLowerCase().includes(query) ||
+              location.state.toLowerCase().includes(query),
+          )
+
+          // 3. preserve selection state
+          .map((location) => ({
+            ...location,
+            selected: previousSelectionMap.get(location.id) ?? false,
+          }))
+      );
     },
   });
 
