@@ -1,56 +1,72 @@
+/* 🟣 CARD CONTAINER (wrapper only) */
+.card-container {
+  position: relative;
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.card-container:hover {
+  transform: translateY(-4px);
+}
+
+/* 🟩 ACTUAL CARD (border lives here) */
 .listing {
   position: relative;
   background: var(--accent-color);
-  border-radius: 30px;
-  padding-bottom: 30px;
-}
-.listing-heading {
-  color: var(--primary-color);
-  padding: 10px 20px 0 20px;
-}
-.listing-photo {
-  height: 250px;
-  width: 100%;
-  object-fit: cover;
-  border-radius: 30px 30px 0 0;
-}
-.listing-location {
-  padding: 10px 20px 20px 20px;
-}
-.listing-location::before {
-  content: url('/public/location-pin.svg') / '';
-}
-section.listing a {
-  padding-left: 20px;
-  text-decoration: none;
-  color: var(--primary-color);
-}
-section.listing a::after {
-  content: '\203A';
-  margin-left: 5px;
-}
-.container {
-  display: inline-block;
-  width: 100%;
-  border: none;
-  background: none;
-  padding: 0;
-  cursor: pointer;
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
-  border-radius: 30px;
+
+  border-radius: 20px;
+  overflow: hidden;
+  border: 3px solid transparent;
 }
 
-.container:active {
-  transform: scale(0.97);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+.card-container.selected .listing {
+  border-color: #4caf50;
 }
+
+.listing-photo {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  display: block;
+}
+
 .wifi-photo {
   position: absolute;
   top: 12px;
   right: 12px;
-  width: 28px;
-  height: 28px;
+
+  width: 32px;
+  /* height: 32px; */
+
   z-index: 10;
+  background: white;
+  /* border-radius: 50%; */
+  padding: 4px;
+
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.listing-heading {
+  color: var(--primary-color);
+  padding: 10px 20px 0;
+}
+
+.listing-location {
+  padding: 10px 20px 20px;
+}
+
+.edit-btn {
+  background-color: rgb(73, 32, 223);
+  border-radius: 10%;
+  padding: 6px;
+  margin-top: 7px;
+  margin-bottom: 10px;
 }

@@ -1,0 +1,33 @@
+<form>
+  <label for="name">Name:</label>
+  <input id="name" type="text" [formControl]="name" (change)="handleChange()" />
+</form>
+<p>Entered {{ name.value }}</p>
+<p></p>
+<button (click)="updateName()">Change</button>
+
+<form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+  <label for="first-name">First Name: </label>
+  <input id="first-name" type="text" formControlName="firstName" />
+  @let firstname = profileForm.controls.firstName;
+  @if (firstname.touched && !firstname.valid) {
+    <p>you much enter a proper name which has atleast 6 char in it</p>
+  }
+
+  <label for="last-name">Last Name: </label>
+  <input id="last-name" type="text" formControlName="lastName" />
+  <div formGroupName="address">
+    <h2>Address</h2>
+    <label for="street">Street: </label>
+    <input id="street" type="text" formControlName="street" />
+    <label for="city">City: </label>
+    <input id="city" type="text" formControlName="city" />
+    <label for="state">State: </label>
+    <input id="state" type="text" formControlName="state" />
+    <label for="zip">Zip Code: </label>
+    <input id="zip" type="text" formControlName="zip" />
+  </div>
+  <p>Form Status: {{ profileForm.status }}</p>
+  <button type="submit" [disabled]="!profileForm.valid">Submit</button>
+  <button (click)="(updateForm)">update the form field</button>
+</form>

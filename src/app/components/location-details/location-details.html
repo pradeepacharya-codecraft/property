@@ -18,17 +18,17 @@
     </ul>
   </section>
   <span>
-    <!-- <button (click)="router.navigate(['/'])">Home</button> -->
-    <!-- PREV -->
     <button class="button" (click)="goBack()" [disabled]="currentIndex === 0">Prev</button>
 
-    <!-- NEXT -->
     <button
       class="button"
       (click)="goForward()"
-      [disabled]="currentIndex === housingLocationList.length - 1"
+      [disabled]="currentIndex === getActiveList().length - 1"
     >
       Next
     </button>
+
+    <button class="add-btn" (click)="editLocation(location?.id)">Edit</button>
   </span>
 </article>
+<router-outlet></router-outlet>

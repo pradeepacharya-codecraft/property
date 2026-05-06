@@ -1,0 +1,51 @@
+/* Container spacing */
+form {
+  margin-bottom: 20px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  max-width: 400px;
+}
+
+/* Labels */
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+.error {
+  color: red;
+}
+
+/* Inputs */
+input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 12px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+/* Button */
+button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 5px;
+  background-color: #1976d2;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* Disabled button */
+button:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+}
+
+/* Paragraph spacing */
+p {
+  margin: 8px 0;
+  font-size: 14px;
+}

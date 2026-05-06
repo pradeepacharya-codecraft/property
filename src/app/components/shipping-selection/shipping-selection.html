@@ -1,0 +1,33 @@
+<!-- .
+<select>
+  <option>Ground</option>
+  <option>Air</option>
+
+  <option>Sea</option>
+</select>
+<input />
+<button>change shpping options</button> -->
+
+<!-- <div class ="container">
+    <select @for(shippingOption of shippingOptions();track shippingOption.id)
+        >
+       <option>{{shippingOptions.name}}</option>
+    </select>
+    <input type ="text" [value]=""userSelectedShippingOption().name"/>
+    <button (click)="changeShippingOptions"> </button>
+
+</div>? -->
+
+<div class="container">
+  <select>
+    @for (shippingOption of shippingOptions(); track shippingOption) {
+      <option [value]="shippingOption">
+        {{ shippingOption }}
+      </option>
+    }
+  </select>
+
+  <input type="text" (change)="handleUserInput($event)" [value]="userSelectedShippingOption()" />
+
+  <button (click)="changeShippingOptions()">Change Options</button>
+</div>
