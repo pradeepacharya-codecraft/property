@@ -1,14 +1,13 @@
 import { Component, computed, inject, linkedSignal, signal } from '@angular/core';
-import { Router ,RouterOutlet,} from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { HousingLocation } from '../housing-location/housing-location';
 import { HousingLocationInfo, HousingLOcationView } from '../../models/housing-location-info';
 import { LocationService, BASE_URL } from '../../services/location-service';
 import { SearchBar } from '@components/search-bar/search-bar';
-import { CardLayout } from '@components/card-layout/card-layout';
 
 @Component({
   selector: 'app-home',
-  imports: [HousingLocation, RouterOutlet,SearchBar, CardLayout],
+  imports: [HousingLocation, RouterOutlet, SearchBar,],
   templateUrl: './home.html',
   styleUrls: ['./home.css'],
 })

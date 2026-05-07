@@ -19,14 +19,14 @@ export class SearchBar {
 
   initialValue = input('');
 
-constructor() {
-  effect(() => {
-    if (this.initialValue() === '') {
-      this.searchControl.setValue('', { emitEvent: false });
-    }
-  });
-  this.initSearch();
-}
+  constructor() {
+    effect(() => {
+      if (this.initialValue() === '') {
+        this.searchControl.setValue('', { emitEvent: false });
+      }
+    });
+    this.initSearch();
+  }
 
   private initSearch(): void {
     this.searchControl.valueChanges

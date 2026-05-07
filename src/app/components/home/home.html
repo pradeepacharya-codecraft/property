@@ -9,20 +9,6 @@
       <span>Edit Mode</span>
     </label>
 
-<<<<<<< HEAD
-  <section class="container">
-    <!-- Search -->
-    <!-- <app-search-bar (search)="searchQuery.set($event)"></app-search-bar> -->
-<app-search-bar 
-  [initialValue]="searchQuery()"
-  (search)="searchQuery.set($event)">
-</app-search-bar>
-    <section class="controls">
-      <label class="edit-toggle">
-        <input type="checkbox" [checked]="mode() === 'edit'" (change)="handleCheckbox($event)" />
-        <span>Edit Mode</span>
-      </label>
-=======
     <p class="mode-text">
       {{ mode() === 'edit' ? 'you can either edit or delete' : 'Normal Mode' }}
     </p>
@@ -34,7 +20,6 @@
     >
       Delete Selected ({{ selectedCount() }})
     </button>
->>>>>>> 1c8264f (card)
 
     <button
       class="restore-btn"
@@ -47,12 +32,6 @@
     <button class="add-btn" (click)="addLocation()" type="button" title="Add Location">+</button>
   </section>
 
-<<<<<<< HEAD
-  
-
-
-  <router-outlet></router-outlet>
-=======
   <section class="results">
     @for (housingLocation of locationToDisplay(); track housingLocation.id) {
       <app-housing-location
@@ -67,6 +46,5 @@
     }
   </section>
 </section>
->>>>>>> 1c8264f (card)
 
 <router-outlet></router-outlet>
