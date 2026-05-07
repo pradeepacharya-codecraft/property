@@ -26,7 +26,10 @@ export class Home {
 
   searchQuery = this.locationService.searchQuery;
 
-  locationToDisplay = linkedSignal<{ locations: HousingLocationInfo[]; query: string }, HousingLOcationView[]>({
+  locationToDisplay = linkedSignal<
+    { locations: HousingLocationInfo[]; query: string },
+    HousingLOcationView[]
+  >({
     source: computed(() => ({
       locations: this.housingLocationList(),
       query: this.searchQuery(),
@@ -71,9 +74,7 @@ export class Home {
 
     this.locationToDisplay.set(
       this.locationToDisplay().map((vm) =>
-        vm.id === selected.id
-          ? { ...vm, selected: !vm.selected }
-          : vm,
+        vm.id === selected.id ? { ...vm, selected: !vm.selected } : vm,
       ),
     );
   }

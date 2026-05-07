@@ -137,8 +137,8 @@ export class LocationService {
   getLocationForId(id: number): HousingLocationInfo | undefined {
     return this.locations().find((location) => location.id === id && location.deleted === false);
   }
-  
-searchQuery = signal('');
+
+  searchQuery = signal('');
   deleteLocationsByIds(ids: number[]) {
     this.locations.update((prev) =>
       prev.map((item) => {

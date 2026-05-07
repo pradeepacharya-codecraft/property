@@ -1,4 +1,15 @@
+<section class="container">
+  <!-- Search -->
+  <!-- <app-search-bar (search)="searchQuery.set($event)"></app-search-bar> -->
+  <app-search-bar [initialValue]="searchQuery()" (search)="searchQuery.set($event)">
+  </app-search-bar>
+  <section class="controls">
+    <label class="edit-toggle">
+      <input type="checkbox" [checked]="mode() === 'edit'" (change)="handleCheckbox($event)" />
+      <span>Edit Mode</span>
+    </label>
 
+<<<<<<< HEAD
   <section class="container">
     <!-- Search -->
     <!-- <app-search-bar (search)="searchQuery.set($event)"></app-search-bar> -->
@@ -11,47 +22,51 @@
         <input type="checkbox" [checked]="mode() === 'edit'" (change)="handleCheckbox($event)" />
         <span>Edit Mode</span>
       </label>
+=======
+    <p class="mode-text">
+      {{ mode() === 'edit' ? 'you can either edit or delete' : 'Normal Mode' }}
+    </p>
 
-      <p class="mode-text">
-        {{ mode() === 'edit' ? 'you can either edit or delete' : 'Normal Mode' }}
-      </p>
+    <button
+      class="delete-btn"
+      (click)="deleteSelected()"
+      [disabled]="mode() !== 'edit' || selectedCount() === 0"
+    >
+      Delete Selected ({{ selectedCount() }})
+    </button>
+>>>>>>> 1c8264f (card)
 
-      <button
-        class="delete-btn"
-        (click)="deleteSelected()"
-        [disabled]="mode() !== 'edit' || selectedCount() === 0"
-      >
-        Delete Selected ({{ selectedCount() }})
-      </button>
+    <button
+      class="restore-btn"
+      (click)="restoreAll()"
+      [disabled]="locationService.getDeletedCount() === 0"
+    >
+      Restore All
+    </button>
 
-      <button
-        class="restore-btn"
-        (click)="restoreAll()"
-        [disabled]="locationService.getDeletedCount() === 0"
-      >
-        Restore All
-      </button>
-
-      <button class="add-btn" (click)="addLocation()" type="button" title="Add Location">+</button>
-    </section>
-
-    <section class="results">
-      @for (housingLocation of locationToDisplay(); track housingLocation.id) {
-        <app-housing-location
-          [housingLocation]="housingLocation"
-          [selected]="housingLocation.selected"
-          (select)="onSelect($event)"
-          [isEditMode]="mode() === 'edit'"
-        >
-        </app-housing-location>
-      } @empty {
-        <p class="empty-state">No housing locations found.</p>
-      }
-    </section>
+    <button class="add-btn" (click)="addLocation()" type="button" title="Add Location">+</button>
   </section>
 
+<<<<<<< HEAD
   
 
 
   <router-outlet></router-outlet>
+=======
+  <section class="results">
+    @for (housingLocation of locationToDisplay(); track housingLocation.id) {
+      <app-housing-location
+        [housingLocation]="housingLocation"
+        [selected]="housingLocation.selected"
+        (select)="onSelect($event)"
+        [isEditMode]="mode() === 'edit'"
+      >
+      </app-housing-location>
+    } @empty {
+      <p class="empty-state">No housing locations found.</p>
+    }
+  </section>
+</section>
+>>>>>>> 1c8264f (card)
 
+<router-outlet></router-outlet>
