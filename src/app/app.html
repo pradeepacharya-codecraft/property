@@ -1,6 +1,6 @@
 <main>
   <nav>
-    <a [routerLink]="['/']">
+    <a [routerLink]="['/']" (click)="locationService.searchQuery.set('')">
       <header class="brand-name">
         <img class="brand-logo" src="public/logo.svg" alt="logo" />
       </header>

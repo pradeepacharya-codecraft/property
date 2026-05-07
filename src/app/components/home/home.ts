@@ -1,13 +1,14 @@
 import { Component, computed, inject, linkedSignal, signal } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { Router ,RouterOutlet,} from '@angular/router';
 import { HousingLocation } from '../housing-location/housing-location';
 import { HousingLocationInfo, HousingLOcationView } from '../../models/housing-location-info';
 import { LocationService, BASE_URL } from '../../services/location-service';
 import { SearchBar } from '@components/search-bar/search-bar';
 import { CardLayout } from '@components/card-layout/card-layout';
+
 @Component({
   selector: 'app-home',
-  imports: [HousingLocation, RouterOutlet, SearchBar, CardLayout],
+  imports: [HousingLocation, RouterOutlet,SearchBar, CardLayout],
   templateUrl: './home.html',
   styleUrls: ['./home.css'],
 })
@@ -16,44 +17,41 @@ export class Home {
   router = inject(Router);
   baseUrl = inject(BASE_URL);
   mode = signal<'normal' | 'edit'>('normal');
-  searchQuery = signal('');
-  // signal from service
+
   housingLocationList = this.locationService.getAllLocations();
 
   modeString = computed(() =>
     this.mode() === 'normal' ? '' : 'you can select the housing location to DELETE',
   );
 
-  locationToDisplay = linkedSignal<HousingLocationInfo[], HousingLOcationView[]>({
-    source: this.housingLocationList,
+  searchQuery = this.locationService.searchQuery;
 
-    computation: (nextLocations, previous) => {
-      const query = this.searchQuery().toLowerCase().trim();
+  locationToDisplay = linkedSignal<{ locations: HousingLocationInfo[]; query: string }, HousingLOcationView[]>({
+    source: computed(() => ({
+      locations: this.housingLocationList(),
+      query: this.searchQuery(),
+    })),
+
+    computation: ({ locations, query }, previous) => {
+      const q = query.toLowerCase().trim();
 
       const previousSelectionMap = new Map(
         (previous?.value ?? []).map((item) => [item.id, item.selected]),
       );
 
-      return (
-        nextLocations
-          // 1. remove deleted items
-          .filter((location) => !location.deleted)
-
-          // 2. search filter
-          .filter(
-            (location) =>
-              query === '' ||
-              location.name.toLowerCase().includes(query) ||
-              location.city.toLowerCase().includes(query) ||
-              location.state.toLowerCase().includes(query),
-          )
-
-          // 3. preserve selection state
-          .map((location) => ({
-            ...location,
-            selected: previousSelectionMap.get(location.id) ?? false,
-          }))
-      );
+      return locations
+        .filter((location) => !location.deleted)
+        .filter(
+          (location) =>
+            q === '' ||
+            location.name.toLowerCase().includes(q) ||
+            location.city.toLowerCase().includes(q) ||
+            location.state.toLowerCase().includes(q),
+        )
+        .map((location) => ({
+          ...location,
+          selected: previousSelectionMap.get(location.id) ?? false,
+        }));
     },
   });
 
@@ -61,7 +59,6 @@ export class Home {
     if (this.mode() === 'normal') {
       this.router.navigate(['details', selected.id]);
 
-      // clear selections when navigating
       this.locationToDisplay.set(
         this.locationToDisplay().map((vm) => ({
           ...vm,
@@ -72,14 +69,10 @@ export class Home {
       return;
     }
 
-    // edit mode toggle selection
     this.locationToDisplay.set(
       this.locationToDisplay().map((vm) =>
         vm.id === selected.id
-          ? {
-              ...vm,
-              selected: !vm.selected,
-            }
+          ? { ...vm, selected: !vm.selected }
           : vm,
       ),
     );
@@ -87,7 +80,6 @@ export class Home {
 
   handleCheckbox(event: Event) {
     const isChecked = (event.target as HTMLInputElement).checked;
-
     this.mode.set(isChecked ? 'edit' : 'normal');
 
     if (!isChecked) {
@@ -113,25 +105,25 @@ export class Home {
 
     if (!idsToDelete.length) return;
 
-    if (!confirm('Are you sure you want to delete selected items?')) {
-      return;
-    }
+    if (!confirm('Are you sure you want to delete selected items?')) return;
 
     this.locationService.deleteLocationsByIds(idsToDelete);
-
     this.mode.set('normal');
   }
 
   restoreAll() {
     this.locationService.restoreAllDeletedLocation();
-
     this.clearSelections();
-
     this.mode.set('normal');
   }
 
   addLocation() {
+    // ✅ reset search so new item is visible after adding
     this.router.navigate(['home/edit']);
+  }
+
+  resetSearch() {
+    this.searchQuery.set('');
   }
 
   selectedCount = computed(() => this.locationToDisplay().filter((x) => x.selected).length);

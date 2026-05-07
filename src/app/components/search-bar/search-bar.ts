@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, output } from '@angular/core';
+import { Component, DestroyRef, effect, inject, input, output } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, map, filter } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -17,9 +17,16 @@ export class SearchBar {
 
   search = output<string>();
 
-  constructor() {
-    this.initSearch();
-  }
+  initialValue = input('');
+
+constructor() {
+  effect(() => {
+    if (this.initialValue() === '') {
+      this.searchControl.setValue('', { emitEvent: false });
+    }
+  });
+  this.initSearch();
+}
 
   private initSearch(): void {
     this.searchControl.valueChanges

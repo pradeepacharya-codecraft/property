@@ -13,9 +13,9 @@
     box-shadow 0.2s ease;
 }
 
-.card-container:hover {
+/* .card-container:hover {
   transform: translateY(-4px);
-}
+} */
 
 /* 🟩 ACTUAL CARD (border lives here) */
 .listing {
